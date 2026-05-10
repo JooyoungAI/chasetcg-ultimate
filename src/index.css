@@ -218,6 +218,27 @@ body {
   margin: 0;
 }
 
+.card-market-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #10b981; /* Green color for prices */
+}
+
+.price-loading, .price-unavailable {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-style: italic;
+}
+
 /* Loading */
 .loader {
   border: 3px solid rgba(255,255,255,0.1);
