@@ -77,20 +77,22 @@ export default function CardModal({ card, onClose }: Props) {
             <h2>{card.name}</h2>
             <p className="subtitle">{card.category} - {card.rarity}</p>
             
-            <div className="modal-section">
-              <h3>Set Information</h3>
-              <p className="modal-text"><strong>Set:</strong> {card.set?.name || 'Unknown'}</p>
-              <p className="modal-text"><strong>Card Number:</strong> {card.localId}/{card.set?.cardCount?.official || '?'}</p>
-              <p className="modal-text"><strong>Illustrator:</strong> {card.illustrator || 'Unknown'}</p>
-            </div>
-
-            {card.hp && (
+            <div className="modal-grid-layout">
               <div className="modal-section">
-                <h3>Stats</h3>
-                <p className="modal-text"><strong>HP:</strong> {card.hp}</p>
-                <p className="modal-text"><strong>Types:</strong> {card.types?.join(', ') || 'None'}</p>
+                <h3>Card Info</h3>
+                <p className="modal-text"><strong>Set:</strong> {card.set?.name || 'Unknown'}</p>
+                <p className="modal-text"><strong>Number:</strong> {card.localId}/{card.set?.cardCount?.official || '?'}</p>
+                <p className="modal-text"><strong>Artist:</strong> {card.illustrator || 'Unknown'}</p>
               </div>
-            )}
+
+              {card.hp && (
+                <div className="modal-section">
+                  <h3>Stats</h3>
+                  <p className="modal-text"><strong>HP:</strong> {card.hp}</p>
+                  <p className="modal-text"><strong>Types:</strong> {card.types?.join(', ') || 'None'}</p>
+                </div>
+              )}
+            </div>
 
             {card.attacks && card.attacks.length > 0 && (
               <div className="modal-section">

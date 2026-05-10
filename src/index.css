@@ -323,10 +323,10 @@ body {
 .modal-content {
   background: var(--secondary);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  max-width: 900px;
+  border-radius: 16px;
+  max-width: 800px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -365,14 +365,14 @@ body {
 .modal-body {
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  gap: 2rem;
+  padding: 1.5rem;
+  gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
   .modal-body {
     flex-direction: row;
-    padding: 3rem;
+    padding: 2rem;
   }
 }
 
@@ -395,8 +395,8 @@ body {
 }
 
 .modal-info-col h2 {
-  font-size: 2.5rem;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  margin: 0 0 0.25rem 0;
   background: linear-gradient(to right, #f8fafc, #94a3b8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -404,31 +404,44 @@ body {
 
 .subtitle {
   color: var(--accent);
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1rem 0;
   text-transform: capitalize;
+}
+
+.modal-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .modal-grid-layout {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .modal-section {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
 .modal-section h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .modal-text {
-  margin: 0.5rem 0;
-  line-height: 1.5;
+  margin: 0.25rem 0;
+  line-height: 1.4;
+  font-size: 0.95rem;
 }
 
 .modal-text strong {
@@ -449,9 +462,9 @@ body {
 
 .attack-effect {
   color: #94a3b8;
-  font-size: 0.95rem;
-  margin-top: 0.5rem;
-  line-height: 1.5;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  line-height: 1.4;
 }
 
 .pricing-details {
@@ -478,9 +491,10 @@ body {
 }
 
 .pricing-box li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   color: #10b981;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .market-link {
