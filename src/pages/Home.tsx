@@ -46,10 +46,8 @@ export default function Home() {
       const sets = await tcgdex.set.list();
       
       const pocketSerie = await tcgdex.serie.get('tcgp').catch(() => null);
-      const meSerie = await tcgdex.serie.get('me').catch(() => null);
       const excludedSetIds = new Set([
-        ...(pocketSerie?.sets.map(s => s.id) || []),
-        ...(meSerie?.sets.map(s => s.id) || [])
+        ...(pocketSerie?.sets.map(s => s.id) || [])
       ]);
 
       const sortedSets = sets.sort((a, b) => b.name.length - a.name.length);
