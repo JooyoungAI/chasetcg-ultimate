@@ -4,9 +4,10 @@ import tcgdex from '../tcgdex';
 
 interface Props {
   card: CardResume;
+  onClick: (card: Card) => void;
 }
 
-export default function PokemonCard({ card }: Props) {
+export default function PokemonCard({ card, onClick }: Props) {
   const [imgError, setImgError] = useState(false);
   const [fullCard, setFullCard] = useState<Card | undefined>(undefined);
   const [loadingDetails, setLoadingDetails] = useState(true);
@@ -36,19 +37,34 @@ export default function PokemonCard({ card }: Props) {
 
   let priceDisplay = null;
   // @ts-ignore
-  if (!loadingDetails && fullCard?.pricing?.tcgplayer) {
+  if (!loadingDetails && fullCard?.pricing) {
     // @ts-ignore
-    const tcg = fullCard.pricing.tcgplayer;
-    const bestVariant = tcg.holo || tcg.normal || tcg.reverse || tcg['1stEdition'] || tcg.unlimited;
-    if (bestVariant && bestVariant.marketPrice) {
-      priceDisplay = `$${bestVariant.marketPrice.toFixed(2)}`;
-    } else if (bestVariant && bestVariant.midPrice) {
-      priceDisplay = `$${bestVariant.midPrice.toFixed(2)}`;
+    const pricing = fullCard.pricing;
+    if (pricing.tcgplayer) {
+      const tcg = pricing.tcgplayer;
+      const bestVariant = tcg.holo || tcg.normal || tcg.reverse || tcg['1stEdition'] || tcg.unlimited;
+      if (bestVariant && bestVariant.marketPrice) {
+        priceDisplay = `$${bestVariant.marketPrice.toFixed(2)}`;
+      } else if (bestVariant && bestVariant.midPrice) {
+        priceDisplay = `$${bestVariant.midPrice.toFixed(2)}`;
+      }
+    } else if (pricing.cardmarket) {
+      const cm = pricing.cardmarket;
+      const price = cm.trend || cm.avg;
+      if (price) {
+        priceDisplay = `€${price.toFixed(2)}`;
+      }
     }
   }
 
+  const handleClick = () => {
+    if (fullCard) {
+      onClick(fullCard);
+    }
+  };
+
   return (
-    <div className="pokemon-card">
+    <div className="pokemon-card" onClick={handleClick}>
       <div className="card-image-container">
         {imageUrl && !imgError ? (
           <img 

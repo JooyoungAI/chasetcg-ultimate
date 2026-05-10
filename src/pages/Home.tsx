@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import tcgdex from '../tcgdex';
 import PokemonCard from '../components/PokemonCard';
+import CardModal from '../components/CardModal';
 import { Query } from '@tcgdex/sdk';
-import type { CardResume } from '@tcgdex/sdk';
+import type { CardResume, Card } from '@tcgdex/sdk';
 
 const CARDS_PER_PAGE = 20;
 
@@ -12,6 +13,7 @@ export default function Home() {
   const [allCards, setAllCards] = useState<CardResume[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   
   // Pagination State
   const [page, setPage] = useState(1);
@@ -28,7 +30,6 @@ export default function Home() {
       let results: CardResume[] = [];
       
       if (searchType === 'name') {
-        // Fetch all matching cards by omitting .paginate()
         results = await tcgdex.card.list(
           Query.create()
             .contains('name', query)
@@ -107,7 +108,11 @@ export default function Home() {
             </div>
             <div className="cards-grid">
               {currentCards.map(card => (
-                <PokemonCard key={card.id} card={card} />
+                <PokemonCard 
+                  key={card.id} 
+                  card={card} 
+                  onClick={setSelectedCard}
+                />
               ))}
             </div>
             {totalPages > 1 && (
@@ -139,6 +144,13 @@ export default function Home() {
           </div>
         ) : null}
       </div>
+
+      {selectedCard && (
+        <CardModal 
+          card={selectedCard} 
+          onClose={() => setSelectedCard(null)} 
+        />
+      )}
     </div>
   );
 }
