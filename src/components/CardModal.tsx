@@ -10,6 +10,15 @@ const EUR_TO_NZD = 1.80; // Approximate conversion rate
 export default function CardModal({ card, onClose }: Props) {
   const imageUrl = card.image ? `${card.image}/high.png` : undefined;
 
+  const getTcgplayerUrl = () => {
+    return `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(`${card.name} ${card.set?.name || ''}`)}`;
+  };
+
+  const getCardmarketUrl = () => {
+    // Cardmarket search is usually better with just the card name
+    return `https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=${encodeURIComponent(card.name)}`;
+  };
+
   // Render prices
   const renderPricing = () => {
     // @ts-ignore
@@ -20,7 +29,11 @@ export default function CardModal({ card, onClose }: Props) {
       <div className="pricing-details">
         {pricing.tcgplayer && (
           <div className="pricing-box">
-            <h4>TCGPlayer (USD)</h4>
+            <h4>
+              <a href={getTcgplayerUrl()} target="_blank" rel="noopener noreferrer" className="market-link">
+                TCGPlayer (USD) ↗
+              </a>
+            </h4>
             <ul>
               {pricing.tcgplayer.normal?.marketPrice && <li>Normal: ${pricing.tcgplayer.normal.marketPrice.toFixed(2)}</li>}
               {pricing.tcgplayer.reverse?.marketPrice && <li>Reverse: ${pricing.tcgplayer.reverse.marketPrice.toFixed(2)}</li>}
@@ -30,7 +43,11 @@ export default function CardModal({ card, onClose }: Props) {
         )}
         {pricing.cardmarket && (
           <div className="pricing-box">
-            <h4>Cardmarket (NZD)</h4>
+            <h4>
+              <a href={getCardmarketUrl()} target="_blank" rel="noopener noreferrer" className="market-link">
+                Cardmarket (NZD) ↗
+              </a>
+            </h4>
             <ul>
               {pricing.cardmarket.trend && <li>Trend: NZ${(pricing.cardmarket.trend * EUR_TO_NZD).toFixed(2)}</li>}
               {pricing.cardmarket.avg && <li>Average: NZ${(pricing.cardmarket.avg * EUR_TO_NZD).toFixed(2)}</li>}
