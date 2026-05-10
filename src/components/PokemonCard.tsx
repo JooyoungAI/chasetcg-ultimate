@@ -1,4 +1,4 @@
-import { CardResume } from '@tcgdex/sdk';
+import type { CardResume } from '@tcgdex/sdk';
 import { useState } from 'react';
 
 interface Props {

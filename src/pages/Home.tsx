@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import tcgdex from '../tcgdex';
 import PokemonCard from '../components/PokemonCard';
-import { CardResume, Query } from '@tcgdex/sdk';
+import { Query } from '@tcgdex/sdk';
+import type { CardResume } from '@tcgdex/sdk';
 
 export default function Home() {
   const [query, setQuery] = useState('');
