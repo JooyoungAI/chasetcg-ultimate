@@ -251,20 +251,30 @@ body {
   flex: 1;
 }
 
-/* Pagination */
+/* Pagination & Stats */
+.search-stats {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .pagination-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
   margin-top: 3rem;
   padding-bottom: 2rem;
 }
 
-.load-more-btn {
+.pagination-btn {
   background: var(--card-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  padding: 0.75rem 2.5rem;
-  border-radius: 999px;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -272,13 +282,20 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.load-more-btn:hover:not(:disabled) {
+.pagination-btn:hover:not(:disabled) {
   background: var(--primary);
   border-color: var(--primary);
   transform: translateY(-2px);
 }
 
-.load-more-btn:disabled {
-  opacity: 0.7;
+.pagination-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+}
+
+.page-info {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #f8fafc;
 }

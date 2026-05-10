@@ -4,18 +4,17 @@ import PokemonCard from '../components/PokemonCard';
 import { Query } from '@tcgdex/sdk';
 import type { CardResume } from '@tcgdex/sdk';
 
+const CARDS_PER_PAGE = 20;
+
 export default function Home() {
   const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState('name'); // 'name' or 'set'
-  const [cards, setCards] = useState<CardResume[]>([]);
+  const [allCards, setAllCards] = useState<CardResume[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   
   // Pagination State
   const [page, setPage] = useState(1);
-  const [allSetCards, setAllSetCards] = useState<CardResume[]>([]);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -24,18 +23,16 @@ export default function Home() {
     setLoading(true);
     setHasSearched(true);
     setPage(1);
-    setAllSetCards([]);
     
     try {
       let results: CardResume[] = [];
       
       if (searchType === 'name') {
+        // Fetch all matching cards by omitting .paginate()
         results = await tcgdex.card.list(
           Query.create()
             .contains('name', query)
-            .paginate(1, 20)
         );
-        setHasMore(results.length === 20);
       } else if (searchType === 'set') {
         const sets = await tcgdex.set.list();
         const matchedSet = sets.find(s => s.name.toLowerCase().includes(query.toLowerCase()) || s.id.toLowerCase() === query.toLowerCase());
@@ -43,50 +40,34 @@ export default function Home() {
         if (matchedSet) {
           const fullSet = await tcgdex.set.get(matchedSet.id);
           if (fullSet && fullSet.cards) {
-            const fullCards = fullSet.cards;
-            setAllSetCards(fullCards);
-            results = fullCards.slice(0, 20);
-            setHasMore(fullCards.length > 20);
+            results = fullSet.cards;
           }
-        } else {
-          setHasMore(false);
         }
       }
       
-      setCards(results);
+      setAllCards(results);
     } catch (error) {
       console.error("Error fetching cards:", error);
-      setCards([]);
-      setHasMore(false);
+      setAllCards([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLoadMore = async () => {
-    if (!hasMore) return;
-    setLoadingMore(true);
-    const nextPage = page + 1;
+  const totalPages = Math.ceil(allCards.length / CARDS_PER_PAGE);
+  const currentCards = allCards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
-    try {
-      if (searchType === 'name') {
-        const moreResults = await tcgdex.card.list(
-          Query.create()
-            .contains('name', query)
-            .paginate(nextPage, 20)
-        );
-        setCards(prev => [...prev, ...moreResults]);
-        setHasMore(moreResults.length === 20);
-      } else if (searchType === 'set') {
-        const moreResults = allSetCards.slice((nextPage - 1) * 20, nextPage * 20);
-        setCards(prev => [...prev, ...moreResults]);
-        setHasMore(allSetCards.length > nextPage * 20);
-      }
-      setPage(nextPage);
-    } catch (error) {
-      console.error("Error loading more cards:", error);
-    } finally {
-      setLoadingMore(false);
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -119,21 +100,34 @@ export default function Home() {
       <div className="grid-container">
         {loading ? (
           <div className="loader"></div>
-        ) : cards.length > 0 ? (
+        ) : allCards.length > 0 ? (
           <>
+            <div className="search-stats">
+              Found {allCards.length} result{allCards.length !== 1 && 's'}
+            </div>
             <div className="cards-grid">
-              {cards.map(card => (
+              {currentCards.map(card => (
                 <PokemonCard key={card.id} card={card} />
               ))}
             </div>
-            {hasMore && (
+            {totalPages > 1 && (
               <div className="pagination-container">
                 <button 
-                  className="load-more-btn" 
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
+                  className="pagination-btn" 
+                  onClick={handlePrevPage}
+                  disabled={page === 1}
                 >
-                  {loadingMore ? 'Loading...' : 'Load More'}
+                  Previous
+                </button>
+                <span className="page-info">
+                  Page {page} of {totalPages}
+                </span>
+                <button 
+                  className="pagination-btn" 
+                  onClick={handleNextPage}
+                  disabled={page === totalPages}
+                >
+                  Next
                 </button>
               </div>
             )}
