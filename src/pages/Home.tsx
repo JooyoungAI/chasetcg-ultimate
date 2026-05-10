@@ -18,15 +18,49 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'name'
 
+  const getCardWeight = (id: string) => {
+    // Extract prefix (e.g., 'sv', 'swsh', 'me')
+    const match = id.match(/^([a-z]+)(\d+)?/i);
+    if (!match) return 0;
+    
+    const prefix = match[1].toLowerCase();
+    const num = parseFloat(match[2] || '0');
+    
+    const weights: Record<string, number> = {
+      'me': 1000,
+      'sv': 900,
+      'swsh': 800,
+      'sm': 700,
+      'xy': 600,
+      'mc': 550,
+      'bw': 500,
+      'col': 480,
+      'hgss': 460,
+      'pl': 440,
+      'dp': 420,
+      'tk': 400,
+      'pop': 380,
+      'ex': 360,
+      'ecard': 340,
+      'lc': 320,
+      'neo': 300,
+      'si': 280,
+      'gym': 260,
+      'base': 240,
+      'misc': 100
+    };
+    
+    return (weights[prefix] || 0) + num;
+  };
+
   const sortCards = (cards: CardResume[], method: string) => {
     const sorted = [...cards];
     if (method === 'name') {
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     } else if (method === 'latest') {
-      // Approximate latest by set ID prefix and number
-      return sorted.sort((a, b) => b.id.localeCompare(a.id));
+      return sorted.sort((a, b) => getCardWeight(b.id) - getCardWeight(a.id));
     } else if (method === 'oldest') {
-      return sorted.sort((a, b) => a.id.localeCompare(b.id));
+      return sorted.sort((a, b) => getCardWeight(a.id) - getCardWeight(b.id));
     }
     return sorted;
   };
