@@ -16,6 +16,20 @@ export default function Home() {
   
   // Pagination State
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'name'
+
+  const sortCards = (cards: CardResume[], method: string) => {
+    const sorted = [...cards];
+    if (method === 'name') {
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (method === 'latest') {
+      // Approximate latest by set ID prefix and number
+      return sorted.sort((a, b) => b.id.localeCompare(a.id));
+    } else if (method === 'oldest') {
+      return sorted.sort((a, b) => a.id.localeCompare(b.id));
+    }
+    return sorted;
+  };
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -31,8 +45,6 @@ export default function Home() {
       
       const sets = await tcgdex.set.list();
       
-      // Get sets to exclude (TCG Pocket related)
-      // We know from investigation that 'tcgp' and 'me' series are Pocket-related in TCGdex
       const pocketSerie = await tcgdex.serie.get('tcgp').catch(() => null);
       const meSerie = await tcgdex.serie.get('me').catch(() => null);
       const excludedSetIds = new Set([
@@ -40,15 +52,11 @@ export default function Home() {
         ...(meSerie?.sets.map(s => s.id) || [])
       ]);
 
-      // Sort sets by length descending so longer set names match first (e.g. "Base Set 2" before "Base Set")
       const sortedSets = sets.sort((a, b) => b.name.length - a.name.length);
-      
       const matchedSet = sortedSets.find(s => lowerQuery.includes(s.name.toLowerCase()) || lowerQuery.includes(s.id.toLowerCase()));
 
       if (matchedSet && !excludedSetIds.has(matchedSet.id)) {
-        // The query contains a valid (non-pocket) set name. 
         const pokemonName = lowerQuery.replace(matchedSet.name.toLowerCase(), '').replace(matchedSet.id.toLowerCase(), '').trim();
-        
         const fullSet = await tcgdex.set.get(matchedSet.id);
         if (fullSet && fullSet.cards) {
           if (pokemonName) {
@@ -58,21 +66,25 @@ export default function Home() {
           }
         }
       } else {
-        // No set name found (or it's an excluded set), search globally by name
         const rawResults = await tcgdex.card.list(
           Query.create().contains('name', query)
         );
-        // Filter out pocket cards from global search
         results = rawResults.filter(c => !excludedSetIds.has(c.id.split('-')[0]));
       }
       
-      setAllCards(results);
+      setAllCards(sortCards(results, sortBy));
     } catch (error) {
       console.error("Error fetching cards:", error);
       setAllCards([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSortChange = (newSort: string) => {
+    setSortBy(newSort);
+    setAllCards(sortCards(allCards, newSort));
+    setPage(1);
   };
 
   const totalPages = Math.ceil(allCards.length / CARDS_PER_PAGE);
@@ -98,16 +110,34 @@ export default function Home() {
         <h1>Find Your Pokémon Cards</h1>
         <p>Explore the complete Pokémon TCG database</p>
         
-        <form className="search-container" onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            className="search-input" 
-            placeholder="Search by name, set, or both (e.g. 'Pikachu Base Set')"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className="search-btn">Search</button>
-        </form>
+        <div className="search-controls">
+          <form className="search-container" onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              className="search-input" 
+              placeholder="Search by name, set, or both (e.g. 'Pikachu Base Set')"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit" className="search-btn">Search</button>
+          </form>
+
+          {hasSearched && (
+            <div className="sort-container">
+              <label htmlFor="sort">Sort By:</label>
+              <select 
+                id="sort" 
+                className="sort-select" 
+                value={sortBy} 
+                onChange={(e) => handleSortChange(e.target.value)}
+              >
+                <option value="latest">Latest Released</option>
+                <option value="oldest">Oldest Released</option>
+                <option value="name">Name (A-Z)</option>
+              </select>
+            </div>
+          )}
+        </div>
       </section>
 
       <div className="grid-container">
