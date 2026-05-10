@@ -31,13 +31,22 @@ export default function Home() {
       
       const sets = await tcgdex.set.list();
       
+      // Get sets to exclude (TCG Pocket related)
+      // We know from investigation that 'tcgp' and 'me' series are Pocket-related in TCGdex
+      const pocketSerie = await tcgdex.serie.get('tcgp').catch(() => null);
+      const meSerie = await tcgdex.serie.get('me').catch(() => null);
+      const excludedSetIds = new Set([
+        ...(pocketSerie?.sets.map(s => s.id) || []),
+        ...(meSerie?.sets.map(s => s.id) || [])
+      ]);
+
       // Sort sets by length descending so longer set names match first (e.g. "Base Set 2" before "Base Set")
       const sortedSets = sets.sort((a, b) => b.name.length - a.name.length);
       
       const matchedSet = sortedSets.find(s => lowerQuery.includes(s.name.toLowerCase()) || lowerQuery.includes(s.id.toLowerCase()));
 
-      if (matchedSet) {
-        // The query contains a set name. Remove the set name from the query to find the pokemon name.
+      if (matchedSet && !excludedSetIds.has(matchedSet.id)) {
+        // The query contains a valid (non-pocket) set name. 
         const pokemonName = lowerQuery.replace(matchedSet.name.toLowerCase(), '').replace(matchedSet.id.toLowerCase(), '').trim();
         
         const fullSet = await tcgdex.set.get(matchedSet.id);
@@ -49,10 +58,12 @@ export default function Home() {
           }
         }
       } else {
-        // No set name found, search globally by name
-        results = await tcgdex.card.list(
+        // No set name found (or it's an excluded set), search globally by name
+        const rawResults = await tcgdex.card.list(
           Query.create().contains('name', query)
         );
+        // Filter out pocket cards from global search
+        results = rawResults.filter(c => !excludedSetIds.has(c.id.split('-')[0]));
       }
       
       setAllCards(results);
