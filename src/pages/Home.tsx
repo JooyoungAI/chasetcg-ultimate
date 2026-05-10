@@ -10,6 +10,12 @@ export default function Home() {
   const [cards, setCards] = useState<CardResume[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [allSetCards, setAllSetCards] = useState<CardResume[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -17,6 +23,8 @@ export default function Home() {
 
     setLoading(true);
     setHasSearched(true);
+    setPage(1);
+    setAllSetCards([]);
     
     try {
       let results: CardResume[] = [];
@@ -27,19 +35,21 @@ export default function Home() {
             .contains('name', query)
             .paginate(1, 20)
         );
+        setHasMore(results.length === 20);
       } else if (searchType === 'set') {
-        // TCGdex set query: we can try to find sets and then their cards,
-        // or search cards by set name. Let's search cards by set name or ID.
-        // The SDK doesn't directly allow .contains('set.name', query) easily,
-        // but we can search for the set first, then get its cards.
         const sets = await tcgdex.set.list();
         const matchedSet = sets.find(s => s.name.toLowerCase().includes(query.toLowerCase()) || s.id.toLowerCase() === query.toLowerCase());
         
         if (matchedSet) {
           const fullSet = await tcgdex.set.get(matchedSet.id);
           if (fullSet && fullSet.cards) {
-            results = fullSet.cards.slice(0, 20); // Limit to 20 for display
+            const fullCards = fullSet.cards;
+            setAllSetCards(fullCards);
+            results = fullCards.slice(0, 20);
+            setHasMore(fullCards.length > 20);
           }
+        } else {
+          setHasMore(false);
         }
       }
       
@@ -47,8 +57,36 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching cards:", error);
       setCards([]);
+      setHasMore(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLoadMore = async () => {
+    if (!hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+
+    try {
+      if (searchType === 'name') {
+        const moreResults = await tcgdex.card.list(
+          Query.create()
+            .contains('name', query)
+            .paginate(nextPage, 20)
+        );
+        setCards(prev => [...prev, ...moreResults]);
+        setHasMore(moreResults.length === 20);
+      } else if (searchType === 'set') {
+        const moreResults = allSetCards.slice((nextPage - 1) * 20, nextPage * 20);
+        setCards(prev => [...prev, ...moreResults]);
+        setHasMore(allSetCards.length > nextPage * 20);
+      }
+      setPage(nextPage);
+    } catch (error) {
+      console.error("Error loading more cards:", error);
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -82,11 +120,24 @@ export default function Home() {
         {loading ? (
           <div className="loader"></div>
         ) : cards.length > 0 ? (
-          <div className="cards-grid">
-            {cards.map(card => (
-              <PokemonCard key={card.id} card={card} />
-            ))}
-          </div>
+          <>
+            <div className="cards-grid">
+              {cards.map(card => (
+                <PokemonCard key={card.id} card={card} />
+              ))}
+            </div>
+            {hasMore && (
+              <div className="pagination-container">
+                <button 
+                  className="load-more-btn" 
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? 'Loading...' : 'Load More'}
+                </button>
+              </div>
+            )}
+          </>
         ) : hasSearched ? (
           <div className="empty-state">
             <h2>No cards found</h2>
