@@ -9,7 +9,6 @@ const CARDS_PER_PAGE = 20;
 
 export default function Home() {
   const [query, setQuery] = useState('');
-  const [searchType, setSearchType] = useState('name'); // 'name' or 'set'
   const [allCards, setAllCards] = useState<CardResume[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -28,22 +27,32 @@ export default function Home() {
     
     try {
       let results: CardResume[] = [];
+      const lowerQuery = query.toLowerCase();
       
-      if (searchType === 'name') {
-        results = await tcgdex.card.list(
-          Query.create()
-            .contains('name', query)
-        );
-      } else if (searchType === 'set') {
-        const sets = await tcgdex.set.list();
-        const matchedSet = sets.find(s => s.name.toLowerCase().includes(query.toLowerCase()) || s.id.toLowerCase() === query.toLowerCase());
+      const sets = await tcgdex.set.list();
+      
+      // Sort sets by length descending so longer set names match first (e.g. "Base Set 2" before "Base Set")
+      const sortedSets = sets.sort((a, b) => b.name.length - a.name.length);
+      
+      const matchedSet = sortedSets.find(s => lowerQuery.includes(s.name.toLowerCase()) || lowerQuery.includes(s.id.toLowerCase()));
+
+      if (matchedSet) {
+        // The query contains a set name. Remove the set name from the query to find the pokemon name.
+        const pokemonName = lowerQuery.replace(matchedSet.name.toLowerCase(), '').replace(matchedSet.id.toLowerCase(), '').trim();
         
-        if (matchedSet) {
-          const fullSet = await tcgdex.set.get(matchedSet.id);
-          if (fullSet && fullSet.cards) {
+        const fullSet = await tcgdex.set.get(matchedSet.id);
+        if (fullSet && fullSet.cards) {
+          if (pokemonName) {
+            results = fullSet.cards.filter(c => c.name.toLowerCase().includes(pokemonName));
+          } else {
             results = fullSet.cards;
           }
         }
+      } else {
+        // No set name found, search globally by name
+        results = await tcgdex.card.list(
+          Query.create().contains('name', query)
+        );
       }
       
       setAllCards(results);
@@ -79,18 +88,10 @@ export default function Home() {
         <p>Explore the complete Pokémon TCG database</p>
         
         <form className="search-container" onSubmit={handleSearch}>
-          <select 
-            className="search-select" 
-            value={searchType} 
-            onChange={(e) => setSearchType(e.target.value)}
-          >
-            <option value="name">Name</option>
-            <option value="set">Set</option>
-          </select>
           <input 
             type="text" 
             className="search-input" 
-            placeholder={searchType === 'name' ? "e.g. Charizard" : "e.g. Base Set"}
+            placeholder="Search by name, set, or both (e.g. 'Pikachu Base Set')"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
