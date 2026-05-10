@@ -5,6 +5,8 @@ interface Props {
   onClose: () => void;
 }
 
+const EUR_TO_NZD = 1.80; // Approximate conversion rate
+
 export default function CardModal({ card, onClose }: Props) {
   const imageUrl = card.image ? `${card.image}/high.png` : undefined;
 
@@ -28,11 +30,11 @@ export default function CardModal({ card, onClose }: Props) {
         )}
         {pricing.cardmarket && (
           <div className="pricing-box">
-            <h4>Cardmarket (EUR)</h4>
+            <h4>Cardmarket (NZD)</h4>
             <ul>
-              {pricing.cardmarket.trend && <li>Trend: €{pricing.cardmarket.trend.toFixed(2)}</li>}
-              {pricing.cardmarket.avg && <li>Average: €{pricing.cardmarket.avg.toFixed(2)}</li>}
-              {pricing.cardmarket['trend-holo'] && <li>Holo Trend: €{pricing.cardmarket['trend-holo'].toFixed(2)}</li>}
+              {pricing.cardmarket.trend && <li>Trend: NZ${(pricing.cardmarket.trend * EUR_TO_NZD).toFixed(2)}</li>}
+              {pricing.cardmarket.avg && <li>Average: NZ${(pricing.cardmarket.avg * EUR_TO_NZD).toFixed(2)}</li>}
+              {pricing.cardmarket['trend-holo'] && <li>Holo Trend: NZ${(pricing.cardmarket['trend-holo'] * EUR_TO_NZD).toFixed(2)}</li>}
             </ul>
           </div>
         )}

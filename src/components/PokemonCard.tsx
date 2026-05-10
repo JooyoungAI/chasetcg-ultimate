@@ -2,6 +2,8 @@ import type { CardResume, Card } from '@tcgdex/sdk';
 import { useState, useEffect } from 'react';
 import tcgdex from '../tcgdex';
 
+const EUR_TO_NZD = 1.80; // Approximate conversion rate
+
 interface Props {
   card: CardResume;
   onClick: (card: Card) => void;
@@ -52,7 +54,8 @@ export default function PokemonCard({ card, onClick }: Props) {
       const cm = pricing.cardmarket;
       const price = cm.trend || cm.avg;
       if (price) {
-        priceDisplay = `€${price.toFixed(2)}`;
+        const nzdPrice = price * EUR_TO_NZD;
+        priceDisplay = `NZ$${nzdPrice.toFixed(2)}`;
       }
     }
   }
