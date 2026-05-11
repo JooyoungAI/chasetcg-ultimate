@@ -27,7 +27,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="logo">
-        TCG<span>Dex</span>
+        Chase<span>TCG</span>
       </Link>
       
       <div className="nav-center">
