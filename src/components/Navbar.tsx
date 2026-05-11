@@ -26,9 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="logo">
-        Chase<span>TCG</span>
-      </Link>
+      <Link to="/" className="logo">Chase<span>TCG</span></Link>
       
       <div className="nav-center">
         <form className="nav-search" onSubmit={handleSearch}>
@@ -42,7 +40,6 @@ export default function Navbar() {
       </div>
 
       <div className="nav-links">
-        <Link to="/search" className={location.pathname === '/search' ? 'active' : ''}>Search</Link>
         <a href="https://pokemon-card-guesser.vercel.app" target="_blank" rel="noopener noreferrer">Guess</a>
         <a href="https://pokemon-card-rater.vercel.app" target="_blank" rel="noopener noreferrer">Rate</a>
       </div>

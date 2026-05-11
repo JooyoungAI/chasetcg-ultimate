@@ -153,11 +153,11 @@ body {
 }
 
 .card-row:nth-child(odd) {
-  animation: slideRight 1500s linear infinite;
+  animation: slideRight 2000s linear infinite;
 }
 
 .card-row:nth-child(2n) {
-  animation: slideLeft 1500s linear infinite;
+  animation: slideLeft 2000s linear infinite;
   margin-left: -50%;
 }
 
