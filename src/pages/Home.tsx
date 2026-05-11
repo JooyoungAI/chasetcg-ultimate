@@ -57,7 +57,7 @@ export default function Home() {
 
       <div className="hero-wrapper">
         <div className="hero-content">
-          <h1>Welcome to TCG Explorer</h1>
+          <h1>Welcome to ChaseTCG</h1>
           <p>Your ultimate companion for Pokémon Trading Card Game data</p>
           
           <form className="landing-search" onSubmit={handleSearch}>

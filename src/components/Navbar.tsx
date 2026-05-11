@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="logo">Chase<span>TCG</span></Link>
+      <Link to="/" className="logo" style={{ color: 'var(--text-color)' }}>Chase<span style={{ color: 'var(--accent)' }}>TCG</span></Link>
       
       <div className="nav-center">
         <form className="nav-search" onSubmit={handleSearch}>
