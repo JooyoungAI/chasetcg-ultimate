@@ -6,10 +6,11 @@ const EUR_TO_NZD = 1.80; // Approximate conversion rate
 
 interface Props {
   card: CardResume;
+  setMap?: Record<string, string>;
   onClick: (card: Card) => void;
 }
 
-export default function PokemonCard({ card, onClick }: Props) {
+export default function PokemonCard({ card, setMap, onClick }: Props) {
   const [imgError, setImgError] = useState(false);
   const [fullCard, setFullCard] = useState<Card | undefined>(undefined);
   const [loadingDetails, setLoadingDetails] = useState(true);
@@ -84,10 +85,14 @@ export default function PokemonCard({ card, onClick }: Props) {
       <div className="card-info">
         <h3 className="card-name">{card.name}</h3>
         <p className="card-set">
-          {!loadingDetails && fullCard ? (
+          {(!loadingDetails && fullCard) ? (
             `${fullCard.set.name} - ${fullCard.localId}${fullCard.set.cardCount?.official ? '/' + fullCard.set.cardCount.official : ''}`
           ) : (
-            card.id
+            (() => {
+              const [setId, localId] = card.id.split('-');
+              const setName = setMap?.[setId] || setId;
+              return localId ? `${setName} - ${localId}` : setName;
+            })()
           )}
         </p>
         

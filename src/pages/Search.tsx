@@ -15,6 +15,7 @@ export default function Search() {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cardsPerPage, setCardsPerPage] = useState(20);
+  const [setMap, setSetMap] = useState<Record<string, string>>({});
   
   // Pagination State
   const [page, setPage] = useState(1);
@@ -82,6 +83,9 @@ export default function Search() {
       const lowerQuery = query.toLowerCase();
       
       const sets = await tcgdex.set.list();
+      const newSetMap: Record<string, string> = {};
+      sets.forEach(s => { newSetMap[s.id] = s.name; });
+      setSetMap(newSetMap);
       
       const pocketSerie = await tcgdex.serie.get('tcgp').catch(() => null);
       const excludedSetIds = new Set([
@@ -213,6 +217,7 @@ export default function Search() {
                 <PokemonCard 
                   key={card.id} 
                   card={card} 
+                  setMap={setMap}
                   onClick={setSelectedCard}
                 />
               ))}
