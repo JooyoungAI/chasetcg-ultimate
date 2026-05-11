@@ -18,8 +18,8 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'name'
 
   const getCardWeight = (id: string) => {
-    // Improved regex to handle prefixes at start or after a year (e.g. 'sv01', '2024sv', 'fut2020')
-    const match = id.match(/^(?:\d+)?([a-z]+)?(\d+)?/i);
+    // Improved regex to handle prefixes at start or after a year, and handle decimal set numbers (e.g. 'me02.5')
+    const match = id.match(/^(?:\d+)?([a-z]+)?(\d+(?:\.\d+)?)?/i);
     if (!match) return 0;
     
     const prefix = (match[1] || '').toLowerCase();
