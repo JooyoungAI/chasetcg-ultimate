@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Home() {
@@ -29,15 +29,15 @@ export default function Home() {
         </form>
 
         <div className="landing-actions">
-          <Link to="/guess" className="action-card">
+          <a href="https://pokemon-card-guesser.vercel.app" target="_blank" rel="noopener noreferrer" className="action-card">
             <h2>Guess the Card</h2>
             <p>Test your Pokémon TCG knowledge with our daily puzzle.</p>
-          </Link>
+          </a>
           
-          <Link to="/rate" className="action-card">
+          <a href="https://pokemon-card-rater.vercel.app" target="_blank" rel="noopener noreferrer" className="action-card">
             <h2>Rate Cards</h2>
             <p>Share your opinions and see community ratings.</p>
-          </Link>
+          </a>
         </div>
       </section>
     </div>

@@ -44,8 +44,8 @@ export default function Navbar() {
 
       <div className="nav-links">
         <Link to="/search" className={location.pathname === '/search' ? 'active' : ''}>Search</Link>
-        <Link to="/guess" className={location.pathname === '/guess' ? 'active' : ''}>Guess</Link>
-        <Link to="/rate" className={location.pathname === '/rate' ? 'active' : ''}>Rate</Link>
+        <a href="https://pokemon-card-guesser.vercel.app" target="_blank" rel="noopener noreferrer">Guess</a>
+        <a href="https://pokemon-card-rater.vercel.app" target="_blank" rel="noopener noreferrer">Rate</a>
       </div>
     </nav>
   );
