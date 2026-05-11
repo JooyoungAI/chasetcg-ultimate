@@ -95,7 +95,16 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.sort-container {
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.sort-container, .per-page-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -103,20 +112,21 @@ body {
   font-size: 0.95rem;
 }
 
-.sort-select {
+.filter-select {
   background: var(--secondary);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   outline: none;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.sort-select:hover {
+.filter-select:hover {
   border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .search-input {
@@ -300,26 +310,40 @@ body {
   font-weight: 500;
 }
 
+.pagination-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-bottom: 2rem;
+}
+
 .pagination-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  margin-top: 3rem;
-  padding-bottom: 2rem;
+  gap: 0.75rem;
 }
 
 .pagination-btn {
   background: var(--card-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.25rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
+}
+
+.pagination-btn.icon-btn {
+  min-width: auto;
+  padding: 0.75rem 1rem;
+  font-size: 1.2rem;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -329,15 +353,57 @@ body {
 }
 
 .pagination-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
-  transform: none;
+  transform: none !important;
 }
 
-.page-info {
-  font-size: 1.1rem;
-  font-weight: 500;
+.page-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
   color: #f8fafc;
+  font-weight: 500;
+}
+
+.page-input {
+  background: var(--secondary);
+  border: 1px solid var(--border-color);
+  color: white;
+  width: 50px;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.page-input::-webkit-inner-spin-button,
+.page-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.jump-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.jump-btn {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jump-btn:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* Modal */

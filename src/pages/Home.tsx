@@ -5,14 +5,13 @@ import CardModal from '../components/CardModal';
 import { Query } from '@tcgdex/sdk';
 import type { CardResume, Card } from '@tcgdex/sdk';
 
-const CARDS_PER_PAGE = 20;
-
 export default function Home() {
   const [query, setQuery] = useState('');
   const [allCards, setAllCards] = useState<CardResume[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [cardsPerPage, setCardsPerPage] = useState(20);
   
   // Pagination State
   const [page, setPage] = useState(1);
@@ -121,21 +120,23 @@ export default function Home() {
     setPage(1);
   };
 
-  const totalPages = Math.ceil(allCards.length / CARDS_PER_PAGE);
-  const currentCards = allCards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
-
-  const handleNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const handleCardsPerPageChange = (count: number) => {
+    setCardsPerPage(count);
+    setPage(1);
   };
 
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const totalPages = Math.ceil(allCards.length / cardsPerPage);
+  const currentCards = allCards.slice((page - 1) * cardsPerPage, page * cardsPerPage);
+
+  const jumpPages = (amount: number) => {
+    const newPage = Math.max(1, Math.min(totalPages, page + amount));
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goToPage = (p: number) => {
+    setPage(Math.max(1, Math.min(totalPages, p)));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -157,18 +158,34 @@ export default function Home() {
           </form>
 
           {hasSearched && (
-            <div className="sort-container">
-              <label htmlFor="sort">Sort By:</label>
-              <select 
-                id="sort" 
-                className="sort-select" 
-                value={sortBy} 
-                onChange={(e) => handleSortChange(e.target.value)}
-              >
-                <option value="latest">Latest Released</option>
-                <option value="oldest">Oldest Released</option>
-                <option value="name">Name (A-Z)</option>
-              </select>
+            <div className="filters-row">
+              <div className="sort-container">
+                <label htmlFor="sort">Sort By:</label>
+                <select 
+                  id="sort" 
+                  className="filter-select" 
+                  value={sortBy} 
+                  onChange={(e) => handleSortChange(e.target.value)}
+                >
+                  <option value="latest">Latest Released</option>
+                  <option value="oldest">Oldest Released</option>
+                  <option value="name">Name (A-Z)</option>
+                </select>
+              </div>
+
+              <div className="per-page-container">
+                <label htmlFor="perPage">Show:</label>
+                <select 
+                  id="perPage" 
+                  className="filter-select" 
+                  value={cardsPerPage} 
+                  onChange={(e) => handleCardsPerPageChange(Number(e.target.value))}
+                >
+                  <option value={20}>20 Cards</option>
+                  <option value={50}>50 Cards</option>
+                  <option value={100}>100 Cards</option>
+                </select>
+              </div>
             </div>
           )}
         </div>
@@ -192,24 +209,58 @@ export default function Home() {
               ))}
             </div>
             {totalPages > 1 && (
-              <div className="pagination-container">
-                <button 
-                  className="pagination-btn" 
-                  onClick={handlePrevPage}
-                  disabled={page === 1}
-                >
-                  Previous
-                </button>
-                <span className="page-info">
-                  Page {page} of {totalPages}
-                </span>
-                <button 
-                  className="pagination-btn" 
-                  onClick={handleNextPage}
-                  disabled={page === totalPages}
-                >
-                  Next
-                </button>
+              <div className="pagination-wrapper">
+                <div className="pagination-container">
+                  <button 
+                    className="pagination-btn icon-btn" 
+                    onClick={() => goToPage(1)}
+                    disabled={page === 1}
+                    title="First Page"
+                  >
+                    «
+                  </button>
+                  <button 
+                    className="pagination-btn" 
+                    onClick={() => jumpPages(-1)}
+                    disabled={page === 1}
+                  >
+                    Prev
+                  </button>
+                  
+                  <div className="page-indicator">
+                    <span>Page</span>
+                    <input 
+                      type="number" 
+                      className="page-input"
+                      value={page}
+                      onChange={(e) => goToPage(Number(e.target.value))}
+                      min={1}
+                      max={totalPages}
+                    />
+                    <span>of {totalPages}</span>
+                  </div>
+
+                  <button 
+                    className="pagination-btn" 
+                    onClick={() => jumpPages(1)}
+                    disabled={page === totalPages}
+                  >
+                    Next
+                  </button>
+                  <button 
+                    className="pagination-btn icon-btn" 
+                    onClick={() => goToPage(totalPages)}
+                    disabled={page === totalPages}
+                    title="Last Page"
+                  >
+                    »
+                  </button>
+                </div>
+                
+                <div className="jump-controls">
+                  <button className="jump-btn" onClick={() => jumpPages(-5)} disabled={page <= 5}>-5</button>
+                  <button className="jump-btn" onClick={() => jumpPages(5)} disabled={page > totalPages - 5}>+5</button>
+                </div>
               </div>
             )}
           </>
