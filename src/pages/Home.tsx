@@ -285,7 +285,7 @@ export default function Home() {
 
   // Generate randomized rows and delays on mount
   const rowData = useMemo(() => {
-    return [...Array(4)].map(() => ({
+    return [...Array(8)].map(() => ({
       cards: shuffleArray(WALL_CARDS),
       delay: Math.random() * -800 // Random negative delay to start at different points
     }));

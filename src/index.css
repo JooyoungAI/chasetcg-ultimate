@@ -132,7 +132,7 @@ body {
 
 .background-wrapper {
   position: absolute;
-  top: -50%;
+  top: -30%; /* Shifted down from -50% */
   left: -50%;
   width: 250%;
   height: 250%;
