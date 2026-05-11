@@ -46,9 +46,6 @@ body {
   font-weight: 800;
   color: var(--text-color);
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   letter-spacing: -0.5px;
 }
 
