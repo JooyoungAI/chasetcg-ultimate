@@ -83,7 +83,13 @@ export default function PokemonCard({ card, onClick }: Props) {
       </div>
       <div className="card-info">
         <h3 className="card-name">{card.name}</h3>
-        <p className="card-set">{card.id}</p>
+        <p className="card-set">
+          {!loadingDetails && fullCard ? (
+            `${fullCard.set.name} - ${fullCard.localId}${fullCard.set.cardCount?.official ? '/' + fullCard.set.cardCount.official : ''}`
+          ) : (
+            card.id
+          )}
+        </p>
         
         <div className="card-market-info">
           {loadingDetails ? (
