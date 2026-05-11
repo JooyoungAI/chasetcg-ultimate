@@ -1,6 +1,110 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+const WALL_CARDS = [
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png",
+  "${c.image}/high.png"
+];
+
+
 export default function Home() {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
@@ -19,16 +123,9 @@ export default function Home() {
           <div key={rowIndex} className="card-row">
             {[...Array(3)].map((_, i) => (
               <div key={i} style={{display: 'flex'}}>
-                <img className="bg-card" src="https://assets.tcgdex.net/en/base/base1/4/high.png" alt="Base Set Charizard" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh7/215/high.png" alt="Umbreon VMAX Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh11/186/high.png" alt="Giratina V Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh7/218/high.png" alt="Rayquaza VMAX Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh12/186/high.png" alt="Lugia V Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh9/154/high.png" alt="Charizard V Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/neo/neo4/107/high.png" alt="Shining Charizard" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh8/271/high.png" alt="Gengar VMAX Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/sv/sv03.5/199/high.png" alt="Charizard ex Alt Art" />
-                <img className="bg-card" src="https://assets.tcgdex.net/en/swsh/swsh6/201/high.png" alt="Blaziken VMAX Alt Art" />
+                {WALL_CARDS.map((url, idx) => (
+                  <img key={idx} className="bg-card" src={url} alt="Pokemon Card" loading="lazy" />
+                ))}
               </div>
             ))}
           </div>
