@@ -19,38 +19,40 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'name'
 
   const getCardWeight = (id: string) => {
-    // Extract prefix (e.g., 'sv', 'swsh', 'me')
-    const match = id.match(/^([a-z]+)(\d+)?/i);
+    // Improved regex to handle prefixes at start or after a year (e.g. 'sv01', '2024sv', 'fut2020')
+    const match = id.match(/^(?:\d+)?([a-z]+)?(\d+)?/i);
     if (!match) return 0;
     
-    const prefix = match[1].toLowerCase();
+    const prefix = (match[1] || '').toLowerCase();
     const num = parseFloat(match[2] || '0');
     
     const weights: Record<string, number> = {
-      'me': 1000,
-      'sv': 900,
-      'swsh': 800,
-      'sm': 700,
-      'xy': 600,
-      'mc': 550,
-      'bw': 500,
-      'col': 480,
-      'hgss': 460,
-      'pl': 440,
-      'dp': 420,
-      'tk': 400,
-      'pop': 380,
-      'ex': 360,
-      'ecard': 340,
-      'lc': 320,
-      'neo': 300,
-      'si': 280,
-      'gym': 260,
-      'base': 240,
-      'misc': 100
+      'me': 10000,
+      'sv': 9000,
+      'swsh': 8000,
+      'fut': 8000, // Futsal promos are from the SWSH era
+      'sm': 7000,
+      'xy': 6000,
+      'mc': 5500,
+      'bw': 5000,
+      'col': 4800,
+      'hgss': 4600,
+      'pl': 4400,
+      'dp': 4200,
+      'tk': 4000,
+      'pop': 3800,
+      'ex': 3600,
+      'ecard': 3400,
+      'lc': 3200,
+      'neo': 3000,
+      'si': 2800,
+      'gym': 2600,
+      'base': 2400,
+      'misc': 1000
     };
     
-    return (weights[prefix] || 0) + num;
+    // Using a large multiplier ensures series order always wins over set numbers/years
+    return (weights[prefix] || 0) * 10000 + num;
   };
 
   const sortCards = (cards: CardResume[], method: string) => {
