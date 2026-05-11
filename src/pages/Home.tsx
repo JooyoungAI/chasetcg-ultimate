@@ -25,7 +25,6 @@ export default function Home() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit">Search</button>
         </form>
 
         <div className="landing-actions">
@@ -38,6 +37,25 @@ export default function Home() {
             <h2>Rate Cards</h2>
             <p>Share your opinions and see community ratings.</p>
           </a>
+        </div>
+
+        <div className="moving-wall-container">
+          <div className="moving-wall">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="wall-track">
+                <img src="https://assets.tcgdex.net/en/base/base1/4/high.png" alt="Base Set Charizard" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh7/215/high.png" alt="Umbreon VMAX Alt Art" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh11/186/high.png" alt="Giratina V Alt Art" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh7/218/high.png" alt="Rayquaza VMAX Alt Art" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh12/186/high.png" alt="Lugia V Alt Art" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh9/154/high.png" alt="Charizard V Alt Art" />
+                <img src="https://assets.tcgdex.net/en/neo/neo4/107/high.png" alt="Shining Charizard" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh8/271/high.png" alt="Gengar VMAX Alt Art" />
+                <img src="https://assets.tcgdex.net/en/sv/sv03.5/199/high.png" alt="Charizard ex Alt Art" />
+                <img src="https://assets.tcgdex.net/en/swsh/swsh6/201/high.png" alt="Blaziken VMAX Alt Art" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

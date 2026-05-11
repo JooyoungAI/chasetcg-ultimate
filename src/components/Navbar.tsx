@@ -38,7 +38,6 @@ export default function Navbar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit">🔍</button>
         </form>
       </div>
 
