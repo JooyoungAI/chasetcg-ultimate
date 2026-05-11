@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 const WALL_CARDS = [
   "https://assets.tcgdex.net/en/base/base1/4/high.png",
@@ -262,6 +262,15 @@ const WALL_CARDS = [
   "https://assets.tcgdex.net/en/me/me01/182/high.png"
 ];
 
+function shuffleArray<T>(array: T[]): T[] {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
 
 export default function Home() {
   const [query, setQuery] = useState('');
@@ -274,18 +283,34 @@ export default function Home() {
     }
   };
 
+  // Generate randomized rows and delays on mount
+  const rowData = useMemo(() => {
+    return [...Array(4)].map(() => ({
+      cards: shuffleArray(WALL_CARDS),
+      delay: Math.random() * -800 // Random negative delay to start at different points
+    }));
+  }, []);
+
   return (
     <div className="home-container">
       <div className="background-wrapper">
-        {[...Array(4)].map((_, rowIndex) => (
-          <div key={rowIndex} className="card-row">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} style={{display: 'flex'}}>
-                {WALL_CARDS.map((url, idx) => (
-                  <img key={idx} className="bg-card" src={url} alt="Pokemon Card" loading="lazy" />
-                ))}
-              </div>
-            ))}
+        {rowData.map((row, rowIndex) => (
+          <div 
+            key={rowIndex} 
+            className="card-row" 
+            style={{ animationDelay: `${row.delay}s` }}
+          >
+            <div style={{display: 'flex'}}>
+              {row.cards.map((url, idx) => (
+                <img key={idx} className="bg-card" src={url} alt="Pokemon Card" loading="lazy" />
+              ))}
+            </div>
+            {/* Repeat once for seamless loop */}
+            <div style={{display: 'flex'}}>
+              {row.cards.map((url, idx) => (
+                <img key={`repeat-${idx}`} className="bg-card" src={url} alt="Pokemon Card" loading="lazy" />
+              ))}
+            </div>
           </div>
         ))}
       </div>
